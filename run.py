@@ -16,6 +16,12 @@ def place_ships(board, num_ships):
         row, col = random.randint(0, len(board) - 1), random.randint(0, len(board) - 1)
         board[row][col] = SHIP
 
+# Convert user input to coordinates
+def input_to_coordinates(move):
+    row = ord(move[0].upper()) - ord('A')
+    col = int(move[1]) - 1
+    return row, col
+
 # Main game loop
 def main():
     size = 5
