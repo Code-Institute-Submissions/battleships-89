@@ -66,14 +66,10 @@ Reference on `ord()` function: [Understanding Python’s ord() function with exa
 
 1. **Solved Bugs**:
 
-   - ...
+   - **Double Ship Placement**: Fixed an issue where ships could be placed on top of each other on the game board, causing an inaccurate count of ships.
 
 2. **Remaining Bugs**:
    - ...
-
----
-
-I've made sure to keep the changes to a minimum, focusing on the details of the functions.
 
 ### Validator Testing
 
