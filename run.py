@@ -54,7 +54,7 @@ def display_boards(player_board, computer_board):
         row_content = " ".join([convert_cell(cell) for cell in row])
         print(f"{label} |", row_content)
 
-    column_headers = ['   ', '1', '2', '3', '4', '5']
+    column_headers = ['   ', '1', '2', '3', ' 4', '5']
     print("  ".join(column_headers))
 
     for idx, row in enumerate(player_board):
@@ -68,7 +68,7 @@ def count_hits(board):
 
 def get_valid_move():
     while True:
-        move = input("Enter your move (e.g., 'A1'), 'x' to exit: ")
+        move = input("Enter your move (e.g., 'A1'), 'x' to exit:\n")
         if move.lower() == 'x':
             print("Thanks for playing! Exiting the game.")
             exit()
