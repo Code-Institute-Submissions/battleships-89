@@ -29,7 +29,6 @@ def place_ships(board, num_ships):
         if attempts > 1000:  # Safeguard against infinite loop
             raise ValueError("Too many attempts to place ships. Possibly too many ships for the board size.")
 
-
 # Convert user input to coordinates
 def input_to_coordinates(move):
     """
@@ -85,6 +84,17 @@ def count_hits(board):
     """
     return sum(row.count(HIT) for row in board)
 
+def get_valid_move():
+    while True:
+        move = input("Enter your move (e.g., 'A1'), 'x' to exit: ")
+        if move.lower() == 'x':
+            print("Thanks for playing! Exiting the game.")
+            exit()  # Exit the game
+        elif len(move) == 2 and move[0].upper() in 'ABCDE' and move[1] in '12345':  # Adjust if board size changes
+            return move.upper()  # Return standardized input
+        else:
+            print("Invalid input. Please provide coordinates in the format 'A1', where 'A' is the row and '1' is the column.")
+
 # Main game loop
 def main():
     size = 5
@@ -98,29 +108,26 @@ def main():
 
     while True:
         display_boards(player_board, computer_board)
+        
+        move = get_valid_move()
+        row, col = input_to_coordinates(move)
+        result = make_move(computer_board, row, col)
 
-        valid_input = False
-        while not valid_input:
-            move = input("Enter your move (e.g., 'A1'), 'x' to exit: ")
-            
-            if move.lower() == 'x':
-                print("Thanks for playing! Exiting the game.")
-                return  # Exit the game
-            if len(move) == 2 and move[0].upper() in 'ABCDE' and move[1] in '12345':
-                row, col = input_to_coordinates(move)
-                result = make_move(computer_board, row, col)
-                if result == "already targeted":
-                    print("You've already targeted this cell. Choose another.")
-                elif result == "hit":
-                    print("You hit the ship! 💥")
-                    valid_input = True
-                elif result == "miss":
-                    print("Miss! ❌")
-                    valid_input = True
+        while result == "already targeted":
+            print("You've already targeted this cell. Choose another.")
+            move = get_valid_move()
+            row, col = input_to_coordinates(move)
+            result = make_move(computer_board, row, col)
+
+        if result == "hit":
+            print("You hit the ship! 💥")
+        elif result == "miss":
+            print("Miss! ❌")
 
         # Computer's turn
         comp_row, comp_col = random.randint(0, size - 1), random.randint(0, size - 1)
         comp_result = make_move(player_board, comp_row, comp_col)
+        
         while comp_result == "already targeted":
             comp_row, comp_col = random.randint(0, size - 1), random.randint(0, size - 1)
             comp_result = make_move(player_board, comp_row, comp_col)
@@ -129,7 +136,7 @@ def main():
             print("Computer hit your ship!")
         elif comp_result == "miss":
             print("Computer missed!")
-        
+
         # Check for end game conditions
         if count_hits(computer_board) == num_ships:
             print("Congratulations! You sunk all the computer's ships!")
@@ -137,8 +144,6 @@ def main():
         elif count_hits(player_board) == num_ships:
             print("All your ships have been sunk! Game Over!")
             break
-
-
 
 if __name__ == "__main__":
     main()
