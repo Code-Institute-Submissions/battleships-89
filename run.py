@@ -19,9 +19,12 @@ def place_ships(board, num_ships):
     - num_ships (int): Number of ships to be placed on the board.
     Note: fix potential overlap!
     """
-    for i in range(num_ships):
+    placed = 0
+    while placed < num_ships:
         row, col = random.randint(0, len(board) - 1), random.randint(0, len(board) - 1)
-        board[row][col] = SHIP
+        if board[row][col] != SHIP:  # Ensure the cell isn't already occupied by a ship
+            board[row][col] = SHIP
+            placed += 1
 
 # Convert user input to coordinates
 def input_to_coordinates(move):
@@ -43,20 +46,90 @@ def make_move(board, row, col):
     - board (list of lists): The 2D game board where the move will be recorded.
     - row (int): The zero-based row index where the move will be made.
     - col (int): The zero-based column index where the move will be made.
-    Returns bool: True if the move results in a hit, False if it's a miss.
+    Returns str: "hit" if the move results in a hit, "miss" if it's a miss, "already targeted" if cell was already hit/miss.
     """
-    if board[row][col] == SHIP:
+    if board[row][col] == MISS or board[row][col] == HIT:
+        return "already targeted"
+    elif board[row][col] == SHIP:
         board[row][col] = HIT
-        return True  # Hit
+        return "hit"
     else:
         board[row][col] = MISS
-        return False  # Miss
+        return "miss"
+
+# Display both boards
+def display_boards(player_board, computer_board):
+    # Display computer's board without showing ships
+    print("\nComputer's Board:\n")
+    for row in computer_board:
+        print(" ".join([cell if cell != SHIP else WATER for cell in row]))
+
+    print("\n---------------------")  # Separation between boards
+
+    # Display player's board with all information visible
+    print("\nPlayer's Board:\n")
+    for row in player_board:
+        print(" ".join(row))
+
+def count_hits(board):
+    """
+    Counts the number of HIT emojis on the given board.
+    Args:
+    - board (list of lists): The 2D game board.
+    Returns int: The number of hits on the board.
+    """
+    return sum(row.count(HIT) for row in board)
 
 # Main game loop
 def main():
     size = 5
+    num_ships = 5
+
     player_board = initialize_board(size)
     computer_board = initialize_board(size)
+
+    place_ships(player_board, num_ships)
+    place_ships(computer_board, num_ships)
+
+    while True:
+        display_boards(player_board, computer_board)
+
+        valid_input = False
+        while not valid_input:
+            move = input("Enter your move (e.g., 'A1'): ")
+            if len(move) == 2 and move[0].upper() in 'ABCDE' and move[1] in '12345':
+                row, col = input_to_coordinates(move)
+                result = make_move(computer_board, row, col)
+                if result == "already targeted":
+                    print("You've already targeted this cell. Choose another.")
+                elif result == "hit":
+                    print("You hit the ship! 💥")
+                    valid_input = True
+                elif result == "miss":
+                    print("Miss! ❌")
+                    valid_input = True
+
+        # Computer's turn
+        comp_row, comp_col = random.randint(0, size - 1), random.randint(0, size - 1)
+        comp_result = make_move(player_board, comp_row, comp_col)
+        while comp_result == "already targeted":
+            comp_row, comp_col = random.randint(0, size - 1), random.randint(0, size - 1)
+            comp_result = make_move(player_board, comp_row, comp_col)
+        
+        if comp_result == "hit":
+            print("Computer hit your ship!")
+        elif comp_result == "miss":
+            print("Computer missed!")
+        
+        # Check for end game conditions
+        if count_hits(computer_board) == num_ships:
+            print("Congratulations! You sunk all the computer's ships!")
+            break
+        elif count_hits(player_board) == num_ships:
+            print("All your ships have been sunk! Game Over!")
+            break
+
+
 
 if __name__ == "__main__":
     main()
