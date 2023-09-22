@@ -1,8 +1,9 @@
-import random
+import randomx
+
 
 # Emoji constants
 WATER = "\U0001F7E6"  # Blue Square for water
-MISS = "\U0000274C"  # Red X for miss
+MISS = "\U0000274C"  # Red X for miss.
 HIT = "\U0001F4A5"  # Explosion for hit
 SHIP = "\U0001F6A2"  # Ship for ship
 
@@ -136,4 +137,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
