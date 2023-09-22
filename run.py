@@ -1,4 +1,4 @@
-import randomx
+import random
 
 
 # Emoji constants
