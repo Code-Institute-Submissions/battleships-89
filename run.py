@@ -17,14 +17,18 @@ def place_ships(board, num_ships):
     Args:
     - board (list of list): 2D list representing the game board.
     - num_ships (int): Number of ships to be placed on the board.
-    Note: fix potential overlap!
     """
     placed = 0
+    attempts = 0
     while placed < num_ships:
         row, col = random.randint(0, len(board) - 1), random.randint(0, len(board) - 1)
         if board[row][col] != SHIP:  # Ensure the cell isn't already occupied by a ship
             board[row][col] = SHIP
             placed += 1
+        attempts += 1
+        if attempts > 1000:  # Safeguard against infinite loop
+            raise ValueError("Too many attempts to place ships. Possibly too many ships for the board size.")
+
 
 # Convert user input to coordinates
 def input_to_coordinates(move):
