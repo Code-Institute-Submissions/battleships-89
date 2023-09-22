@@ -57,19 +57,20 @@ def make_move(board, row, col):
         board[row][col] = MISS
         return "miss"
 
-# Display both boards
 def display_boards(player_board, computer_board):
     # Display computer's board without showing ships
-    print("\nComputer's Board:\n")
-    for row in computer_board:
-        print(" ".join([cell if cell != SHIP else WATER for cell in row]))
+    print("\nComputer's Board:")
+        # Display rows with row labels (A, B, C, etc.)
+    for idx, row in enumerate(computer_board):
+        label = chr(idx + ord('A'))
+        print(f"{label} |", " ".join([cell if cell != SHIP else WATER for cell in row]))
 
-    print("\n---------------------")  # Separation between boards
-
-    # Display player's board with all information visible
-    print("\nPlayer's Board:\n")
-    for row in player_board:
-        print(" ".join(row))
+    # Display column headings between the two boards
+    print("  ".join(['   '] + ['1', '2', '3', '4', '5']))  # Adjust if you change the board size
+    # Display player's board with all information visible and with row labels
+    for idx, row in enumerate(player_board):
+        label = chr(idx + ord('A'))
+        print(f"{label} |", " ".join(row))
 
 def count_hits(board):
     """
@@ -96,7 +97,11 @@ def main():
 
         valid_input = False
         while not valid_input:
-            move = input("Enter your move (e.g., 'A1'): ")
+            move = input("Enter your move (e.g., 'A1'), 'x' to exit: ")
+            
+            if move.lower() == 'x':
+                print("Thanks for playing! Exiting the game.")
+                return  # Exit the game
             if len(move) == 2 and move[0].upper() in 'ABCDE' and move[1] in '12345':
                 row, col = input_to_coordinates(move)
                 result = make_move(computer_board, row, col)
